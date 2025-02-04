@@ -28,8 +28,9 @@ public class RobotContainer {
       () -> -m_Joystick.getRawAxis(OIConstants.kDriverYAxis), 
       () -> m_Joystick.getRawAxis(OIConstants.kDriverXAxis), 
       () -> m_Joystick.getRawAxis(OIConstants.kDriverRotAxis), 
-      () -> m_Joystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
+      () -> !m_Joystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
 
+    new InstantCommand();
     configureButtonBindings();
   }
 

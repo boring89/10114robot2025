@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -36,14 +37,15 @@ public class SwerveModule{
   private final boolean absoluteEncoderReversed;
   private final double absoluteEncoderOffsetRad;
 
-  private SwerveModuleState correctedDesiredState;
-  
+
   public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
       int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
     this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
     this.absoluteEncoderReversed = absoluteEncoderReversed;
 
     absoluteEncoder = new CANcoder(absoluteEncoderId);
+
+
   
     driveMotor = new SparkFlex(driveMotorId, MotorType.kBrushless);
     turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
@@ -92,8 +94,10 @@ public class SwerveModule{
     double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
     angle *= 2.0 * Math.PI;
     angle -= absoluteEncoderOffsetRad;
-    return angle;
+    return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
   }
+
+
   
   public void resetEncoders() {
     driveEncoder.setPosition(0);
@@ -104,20 +108,18 @@ public class SwerveModule{
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
   }
   
-  public SwerveModuleState setDesiredState(SwerveModuleState state) {
+  public void setDesiredState(SwerveModuleState state) {
     if(Math.abs(state.speedMetersPerSecond) < 0.001) {
       stop();
-      return new SwerveModuleState();
+      return;
     }
-    correctedDesiredState = new SwerveModuleState();
     
-    correctedDesiredState.speedMetersPerSecond = state.speedMetersPerSecond;
-    correctedDesiredState.optimize(new Rotation2d(turningEncoder.getPosition()));
     
-    driveMotor.set(correctedDesiredState.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-    turningMotor.set(turningPidController.calculate(getTurningPosition(), correctedDesiredState.angle.getRadians()));
+    state = SwerveModuleState.optimize(state, new Rotation2d(turningEncoder.getPosition()));
+    
+    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
 
-    return correctedDesiredState;
   }
 
   public void stop() {

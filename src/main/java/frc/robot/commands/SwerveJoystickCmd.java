@@ -36,7 +36,9 @@ public class SwerveJoystickCmd extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    swerveSubsystem.resetEncoder();
+  }
 
 
   @Override
@@ -74,6 +76,8 @@ public class SwerveJoystickCmd extends Command {
 
     //Output each module states to wheels
     swerveSubsystem.setModuleStates(moduleStates);
+
+    swerveSubsystem.getCANcoderPosition();
   }
 
 
