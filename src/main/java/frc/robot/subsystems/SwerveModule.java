@@ -51,25 +51,28 @@ public class SwerveModule{
     driveCfg
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(50)
-        .inverted(driveMotorReversed);
+        .inverted(driveMotorReversed)
+        .apply(driveCfg);
     driveCfg.encoder
         .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
-        .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
+        .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec)
+        .apply(driveCfg.encoder);
     turningCfg
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(50)
-        .inverted(turningMotorReversed);
+        .inverted(turningMotorReversed)
+        .apply(turningCfg);
     turningCfg.encoder
         .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
-        .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
+        .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec)
+        .apply(turningCfg.encoder);
   
     driveEncoder = driveMotor.getEncoder();
     turningEncoder = turningMotor.getEncoder();
   
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
-  
-    resetEncoders();
+
   }
   
   public double getDrivePosition() {
@@ -103,7 +106,7 @@ public class SwerveModule{
   }
   
   public SwerveModuleState getState() {
-    return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+    return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getDrivePosition()));
   }
   
   public SwerveModuleState setDesiredState(SwerveModuleState state) {

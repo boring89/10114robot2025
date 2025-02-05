@@ -66,7 +66,7 @@ public final class Constants {
       public static final boolean kFLDriveAbsoluteEncoderReversed = false;
       public static final boolean kFRDriveAbsoluteEncoderReversed = false;
       public static final boolean kBLDriveAbsoluteEncoderReversed = false;
-      public static final boolean kBRDriveAbsoluteEncoderReversed = false;
+      public static final boolean kBRDriveAbsoluteEncoderReversed = true;
 
       public static final double kFLDriveAbsoluteEncoderOffsetRad = 0;
       public static final double kFRDriveAbsoluteEncoderOffsetRad = 0;

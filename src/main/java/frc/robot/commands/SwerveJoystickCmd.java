@@ -76,8 +76,6 @@ public class SwerveJoystickCmd extends Command {
 
     //Output each module states to wheels
     swerveSubsystem.setModuleStates(moduleStates);
-
-    swerveSubsystem.getCANcoderPosition();
   }
 
 

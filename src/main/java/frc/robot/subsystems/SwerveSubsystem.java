@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -13,10 +14,7 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    private final CANcoder FLcancoder = new CANcoder(9, "rio");
-    private final CANcoder FRcancoder = new CANcoder(10, "rio");
-    private final CANcoder BLcancoder = new CANcoder(11, "rio");
-    private final CANcoder BRcancoder = new CANcoder(12, "rio");
+    private final CANcoder CAN = new CANcoder(12);
     
     private final SwerveModule FL = new SwerveModule(
         DriveConstants.kFLDriveMotorPort, 
@@ -81,6 +79,7 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Robot Heading", getHeading());
+        CANcoderNum();
     }
 
     public void stopModules() {
@@ -105,10 +104,7 @@ public class SwerveSubsystem extends SubsystemBase {
         BR.setDesiredState(desiredStates[3]);
     }
 
-    public void getCANcoderPosition() {
-        SmartDashboard.putNumber("FL", FLcancoder.getAbsolutePosition().getValueAsDouble() * (Math.PI * 2));
-        SmartDashboard.putNumber("FR", FRcancoder.getAbsolutePosition().getValueAsDouble() * (Math.PI * 2));
-        SmartDashboard.putNumber("BL", BLcancoder.getAbsolutePosition().getValueAsDouble() * (Math.PI * 2));
-        SmartDashboard.putNumber("BR", BRcancoder.getAbsolutePosition().getValueAsDouble() * (Math.PI * 2));
+    public void CANcoderNum() {
+        SmartDashboard.putNumber("CAN", CAN.getAbsolutePosition().getValueAsDouble());
     }
 }
