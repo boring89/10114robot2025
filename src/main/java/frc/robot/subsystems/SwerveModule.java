@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -66,6 +68,9 @@ public class SwerveModule{
         .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
         .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec)
         .apply(turningCfg.encoder);
+
+    driveMotor.configure(driveCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turningMotor.configure(turningCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
     driveEncoder = driveMotor.getEncoder();
     turningEncoder = turningMotor.getEncoder();
