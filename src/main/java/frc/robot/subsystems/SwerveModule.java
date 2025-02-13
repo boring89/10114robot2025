@@ -52,7 +52,7 @@ public class SwerveModule{
   
     driveCfg
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(50)
+        .smartCurrentLimit(70)
         .inverted(driveMotorReversed)
         .apply(driveCfg);
     driveCfg.encoder
@@ -61,7 +61,7 @@ public class SwerveModule{
         .apply(driveCfg.encoder);
     turningCfg
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(50)
+        .smartCurrentLimit(25)
         .inverted(turningMotorReversed)
         .apply(turningCfg);
     turningCfg.encoder
@@ -75,7 +75,10 @@ public class SwerveModule{
     driveEncoder = driveMotor.getEncoder();
     turningEncoder = turningMotor.getEncoder();
   
-    turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
+    turningPidController = new PIDController(
+      ModuleConstants.kPTurning, 
+      ModuleConstants.kITurning, 
+      ModuleConstants.kDTurning);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
   }
@@ -122,7 +125,7 @@ public class SwerveModule{
     correctedDesiredState = new SwerveModuleState();
     
     correctedDesiredState.speedMetersPerSecond = state.speedMetersPerSecond;
-    correctedDesiredState = SwerveModuleState.optimize(state, new Rotation2d(turningEncoder.getPosition()));
+    correctedDesiredState = state.optimize(state, new Rotation2d(turningEncoder.getPosition()));
     
     driveMotor.set(correctedDesiredState.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     turningMotor.set(turningPidController.calculate(getTurningPosition(), correctedDesiredState.angle.getRadians()));

@@ -8,25 +8,19 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
   
   public static final class ModuleConstants {
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
     public static final double kDriveMotorGearRatio = 1 / 5.95;
-    public static final double kTurningMotorGearRatio = 1 / 21.4;
+    public static final double kTurningMotorGearRatio = 1 / 19.6;
     public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
     public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
     public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
-    public static final double kPTurning = 0.3;
+    public static final double kPTurning = 0.45;
+    public static final double kITurning = 0;
+    public static final double kDTurning = 0.;
   }
 
   public static final class DriveConstants {
@@ -73,13 +67,13 @@ public final class Constants {
       public static final double kBLDriveAbsoluteEncoderOffsetRad = 0;
       public static final double kBRDriveAbsoluteEncoderOffsetRad = 0;
 
-      public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
-      public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 3 * 1.6 * Math.PI;
+      public static final double kPhysicalMaxSpeedMetersPerSecond = 28;
+      public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 12 * 1.6 * Math.PI;
       public static final double kTeleDriveMaxSpeedMeterPerSec = (kPhysicalMaxSpeedMetersPerSecond / 4);
       public static final double kTeleDriveMaxAngularSpeedRadiansPerSec = //
           kPhysicalMaxAngularSpeedRadiansPerSec / 4;
-      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 3;
-      public static final double kTeleDriveMaxAngularAccelerationUnitsPerSec = 3;
+      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 6;
+      public static final double kTeleDriveMaxAngularAccelerationUnitsPerSec = 5;
   }
 
   public static final class OIConstants {
@@ -90,5 +84,23 @@ public final class Constants {
     public static final int kDriverFieldOrientedButtonIdx = 1;
 
     public static final double kDeadBand = 0.06;
+  }
+
+  public static final class CoralConstants {
+    public static final double kP = 0.25;
+    public static final double kI = 0.0;
+    public static final double kD = 0.012;
+
+    public static final double kCoralStation = -22.5;
+    public static final double kLevel1 = 0.0;
+    public static final double kLevel2 = -10.5;
+    public static final double kLevel3 = -37;
+  }
+
+  public static final class AlgaeConstants {
+    public static final double kP = 0.3;
+    public static final double kPcatch = 0.015;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
   }
 }
