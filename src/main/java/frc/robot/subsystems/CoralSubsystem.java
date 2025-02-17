@@ -2,10 +2,13 @@ package frc.robot.subsystems;
 
 
 
-import com.revrobotics.RelativeEncoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,9 +16,11 @@ import frc.robot.Constants.CoralConstants;
 
 public class CoralSubsystem extends SubsystemBase {
     
-    private final SparkMax ElevatorMotor, IntakeMotor;
+    private final UsbCamera server;
 
-    private final RelativeEncoder ElevatorEncoder;
+    private final SparkMax IntakeMotor;
+
+    private final TalonFX ElevatorMotor;
 
     private final PIDController ElevatorPID;
 
@@ -25,10 +30,10 @@ public class CoralSubsystem extends SubsystemBase {
 
     public CoralSubsystem() {
 
-        ElevatorMotor = new SparkMax(15, MotorType.kBrushless);
-        IntakeMotor = new SparkMax(16, MotorType.kBrushless);
+        server = CameraServer.startAutomaticCapture();
 
-        ElevatorEncoder = ElevatorMotor.getEncoder();
+        ElevatorMotor = new TalonFX(15);
+        IntakeMotor = new SparkMax(16, MotorType.kBrushless);
 
         ElevatorPID = new PIDController(
             CoralConstants.kP, 
@@ -37,7 +42,7 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public double getElevatorPosition() {
-        return ElevatorEncoder.getPosition();
+        return ElevatorMotor.getPosition().getValueAsDouble();
     }
 
     public void ChangeLevel() { 
@@ -105,9 +110,12 @@ public class CoralSubsystem extends SubsystemBase {
     }
 
     public void initialize() {
-        ElevatorEncoder.setPosition(0);
+        ElevatorMotor.setPosition(0);
         System.out.println("CoralSubsystem initialized");
-    }
+        UsbCamera CAM = CameraServer.startAutomaticCapture();
+        CAM.setResolution(640, 480);
+        CAM.setFPS(30);
+        }
 
     @Override
     public void periodic() {

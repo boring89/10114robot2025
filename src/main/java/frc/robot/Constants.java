@@ -67,13 +67,13 @@ public final class Constants {
       public static final double kBLDriveAbsoluteEncoderOffsetRad = 0;
       public static final double kBRDriveAbsoluteEncoderOffsetRad = 0;
 
-      public static final double kPhysicalMaxSpeedMetersPerSecond = 28;
-      public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 12 * 1.6 * Math.PI;
-      public static final double kTeleDriveMaxSpeedMeterPerSec = (kPhysicalMaxSpeedMetersPerSecond / 4);
+      public static final double kPhysicalMaxSpeedMetersPerSecond = 10;
+      public static final double kPhysicalMaxAngularSpeedRadiansPerSec = 7 * 2 * Math.PI;
+      public static final double kTeleDriveMaxSpeedMeterPerSec = (kPhysicalMaxSpeedMetersPerSecond / 2);
       public static final double kTeleDriveMaxAngularSpeedRadiansPerSec = //
           kPhysicalMaxAngularSpeedRadiansPerSec / 4;
-      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 6;
-      public static final double kTeleDriveMaxAngularAccelerationUnitsPerSec = 5;
+      public static final double kTeleDriveMaxAccelerationUnitsPerSec = 10;
+      public static final double kTeleDriveMaxAngularAccelerationUnitsPerSec = 8;
   }
 
   public static final class OIConstants {
@@ -83,18 +83,18 @@ public final class Constants {
     public static final int kDriverRotAxis = 4;
     public static final int kDriverFieldOrientedButtonIdx = 1;
 
-    public static final double kDeadBand = 0.06;
+    public static final double kDeadBand = 0.04;
   }
 
   public static final class CoralConstants {
-    public static final double kP = 0.25;
+    public static final double kP = 0.15;
     public static final double kI = 0.0;
-    public static final double kD = 0.012;
+    public static final double kD = 0.0;
 
-    public static final double kCoralStation = -22.5;
+    public static final double kCoralStation = -70;
     public static final double kLevel1 = 0.0;
-    public static final double kLevel2 = -10.5;
-    public static final double kLevel3 = -37;
+    public static final double kLevel2 = -31;
+    public static final double kLevel3 = -114.6;
   }
 
   public static final class AlgaeConstants {

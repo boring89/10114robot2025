@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -52,7 +53,7 @@ public class SwerveModule{
   
     driveCfg
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(70)
+        .smartCurrentLimit(64)
         .inverted(driveMotorReversed)
         .apply(driveCfg);
     driveCfg.encoder
@@ -132,6 +133,13 @@ public class SwerveModule{
 
     return correctedDesiredState;
   }
+
+  public SwerveModulePosition getPosition(){
+        return new SwerveModulePosition(
+            driveEncoder.getPosition(),
+            new Rotation2d(getTurningPosition())
+        );
+    }
 
   public void stop() {
     driveMotor.set(0);
