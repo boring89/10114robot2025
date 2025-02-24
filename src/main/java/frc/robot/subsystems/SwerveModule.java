@@ -6,11 +6,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -33,6 +36,7 @@ public class SwerveModule{
   public static final SparkFlexConfig driveCfg = new SparkFlexConfig();
   public static final SparkMaxConfig turningCfg = new SparkMaxConfig();
 
+  private final SparkClosedLoopController drivePidController;
   private final PIDController turningPidController;
 
   private final CANcoder absoluteEncoder;
@@ -40,6 +44,8 @@ public class SwerveModule{
   private final double absoluteEncoderOffsetRad;
 
   private SwerveModuleState correctedDesiredState;
+
+  double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
   
   public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
       int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -60,6 +66,11 @@ public class SwerveModule{
         .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
         .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec)
         .apply(driveCfg.encoder);
+    driveCfg.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .pid(0.13, 0.000, 0)
+      .velocityFF(drivingVelocityFeedForward)
+      .outputRange(-1, 1);
     turningCfg
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(25)
@@ -76,6 +87,7 @@ public class SwerveModule{
     driveEncoder = driveMotor.getEncoder();
     turningEncoder = turningMotor.getEncoder();
   
+    drivePidController = driveMotor.getClosedLoopController();
     turningPidController = new PIDController(
       ModuleConstants.kPTurning, 
       ModuleConstants.kITurning, 
@@ -128,7 +140,8 @@ public class SwerveModule{
     correctedDesiredState.speedMetersPerSecond = state.speedMetersPerSecond;
     correctedDesiredState = state.optimize(state, new Rotation2d(turningEncoder.getPosition()));
     
-    driveMotor.set(correctedDesiredState.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    drivePidController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    // driveMotor.set(correctedDesiredState.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     turningMotor.set(turningPidController.calculate(getTurningPosition(), correctedDesiredState.angle.getRadians()));
 
     return correctedDesiredState;
@@ -140,6 +153,10 @@ public class SwerveModule{
             new Rotation2d(getTurningPosition())
         );
     }
+
+
+
+
 
   public void stop() {
     driveMotor.set(0);

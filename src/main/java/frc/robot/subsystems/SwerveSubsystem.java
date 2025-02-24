@@ -95,6 +95,10 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putNumber("FL", FL.getDriveVelocity());
+        SmartDashboard.putNumber("FR", FR.getDriveVelocity());
+        SmartDashboard.putNumber("BL", BL.getDriveVelocity());
+        SmartDashboard.putNumber("BR", BR.getDriveVelocity());
     }
 
     public void stopModules() {
@@ -197,4 +201,5 @@ public class SwerveSubsystem extends SubsystemBase {
             BL.getState(), 
             BR.getState()};
     }
+    
 }

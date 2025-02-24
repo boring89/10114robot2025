@@ -11,6 +11,8 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralConstants;
 
@@ -25,6 +27,7 @@ public class CoralSubsystem extends SubsystemBase {
     private final PIDController ElevatorPID;
 
     private int Level = 0;
+    private int lastLevel = 0;
     private int IntakeMode = 0;
     private boolean isIntake = false;
 
@@ -98,15 +101,24 @@ public class CoralSubsystem extends SubsystemBase {
         IntakeMotor.set(0);
     }
 
-    public void Intake() {
+    public Command Intake() {
         Level = 0;
-        IntakeMotor.set(-0.2);
+        IntakeMotor.set(0.3);
         isIntake = true;
+        return new InstantCommand(() -> {
+            Level = 0;
+            IntakeMotor.set(0.3);
+            isIntake = true;
+        }, this);
     }
 
-    public void Shoot() {
-        IntakeMotor.set(0.5);
+    public Command Shoot() {
+        IntakeMotor.set(-0.5);
         isIntake = false;
+        return new InstantCommand(() -> {
+            IntakeMotor.set(0.5);
+            isIntake = false;
+        }, this);
     }
 
     public void initialize() {

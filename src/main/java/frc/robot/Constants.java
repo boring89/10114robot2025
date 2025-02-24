@@ -20,7 +20,13 @@ public final class Constants {
     public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
     public static final double kPTurning = 0.45;
     public static final double kITurning = 0;
-    public static final double kDTurning = 0.;
+    public static final double kDTurning = 0.0;
+    public static final double WilliamConstant = 1.042;
+    public static final double kDrivingMotorFreeSpeedRps = NEOConstants.kFreeSpdRPM / 60;
+    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
+    public static final double kDrivingMotorReduction = 5.95 * WilliamConstant;
+    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
+        / kDrivingMotorReduction;
   }
 
   public static final class DriveConstants {
@@ -86,19 +92,23 @@ public final class Constants {
     public static final double kDeadBand = 0.04;
   }
 
+  public static final class NEOConstants {
+    public static final int kFreeSpdRPM = 6784;
+  }
+
   public static final class CoralConstants {
-    public static final double kP = 0.15;
+    public static final double kP = 0.14;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
     public static final double kCoralStation = -70;
     public static final double kLevel1 = 0.0;
-    public static final double kLevel2 = -31;
-    public static final double kLevel3 = -114.6;
+    public static final double kLevel2 = -30;
+    public static final double kLevel3 = -110.6;
   }
 
   public static final class AlgaeConstants {
-    public static final double kP = 0.3;
+    public static final double kP = 0.25;
     public static final double kPcatch = 0.015;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
