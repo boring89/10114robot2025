@@ -29,9 +29,9 @@ public class LimelightCmd extends Command {
 
     @Override
     public void execute() {
-        TurnOutput = limelightSubsystem.getYaw();
-        XMoveOutput = limelightSubsystem.getXMove();
-        YMoveOutput = limelightSubsystem.getYMove();
+        // TurnOutput = limelightSubsystem.getYaw();
+        // XMoveOutput = limelightSubsystem.getXMove();
+        // YMoveOutput = limelightSubsystem.getYMove();
     }
 
     @Override

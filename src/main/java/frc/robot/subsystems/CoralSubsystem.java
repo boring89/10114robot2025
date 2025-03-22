@@ -11,14 +11,10 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralConstants;
 
 public class CoralSubsystem extends SubsystemBase {
-    
-    private final UsbCamera server;
 
     private final SparkMax IntakeMotor;
 
@@ -26,14 +22,13 @@ public class CoralSubsystem extends SubsystemBase {
 
     private final PIDController ElevatorPID;
 
-    private int Level = 0;
-    private int lastLevel = 0;
+    private int Level = 1;
     private int IntakeMode = 0;
+    private double IntakeSpeed;
     private boolean isIntake = false;
+    private int LastMode = 0;
 
     public CoralSubsystem() {
-
-        server = CameraServer.startAutomaticCapture();
 
         ElevatorMotor = new TalonFX(15);
         IntakeMotor = new SparkMax(16, MotorType.kBrushless);
@@ -50,13 +45,17 @@ public class CoralSubsystem extends SubsystemBase {
 
     public void ChangeLevel() { 
         switch (Level) {
-            case 0: case 1: case 2:
+            case 1: case 2:
                 Level += 1;
                 break;
             case 3:
-                Level = 0;
+                Level = 1;
                 break;
         }
+    }
+    
+    public void AutoLevel(int level) {
+        Level = level;
     }
 
     public void ChangeIntakeMode() {
@@ -84,41 +83,44 @@ public class CoralSubsystem extends SubsystemBase {
         switch (Level) {
             case 0:
                 setElevatorPosition(CoralConstants.kCoralStation);
+                IntakeSpeed = 0.3;
                 break;
             case 1:
                 setElevatorPosition(CoralConstants.kLevel1);
+                IntakeSpeed = -0.45;
+                LastMode = 1;
                 break;
             case 2:
                 setElevatorPosition(CoralConstants.kLevel2);
+                IntakeSpeed = -0.65;
+                LastMode = 2;
                 break;
             case 3:
                 setElevatorPosition(CoralConstants.kLevel3);
+                IntakeSpeed = -0.65;
+                LastMode = 3;
                 break;
         }
     }
 
     public void Wait() {
+        if (isIntake == true) {
+            Level = LastMode;
+            isIntake = false;
+        }
         IntakeMotor.set(0);
     }
 
-    public Command Intake() {
+    public void Intake() {
         Level = 0;
-        IntakeMotor.set(0.3);
+        IntakeMotor.set(IntakeSpeed);
         isIntake = true;
-        return new InstantCommand(() -> {
-            Level = 0;
-            IntakeMotor.set(0.3);
-            isIntake = true;
-        }, this);
     }
 
-    public Command Shoot() {
-        IntakeMotor.set(-0.5);
+    public void Shoot() {
+        IntakeMotor.set(IntakeSpeed);
+        System.out.println("hi");
         isIntake = false;
-        return new InstantCommand(() -> {
-            IntakeMotor.set(0.5);
-            isIntake = false;
-        }, this);
     }
 
     public void initialize() {
